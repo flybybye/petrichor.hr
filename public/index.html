@@ -15,14 +15,14 @@
     canvas { position: fixed; inset: 0; width: 100%; height: 100%; }
     main { position: relative; height: 100%; display: grid; place-items: center; }
     .logo {
-      width: 150px; height: 150px; border-radius: 50%;
+      width: min(300px, 70vw); height: min(300px, 70vw); border-radius: 50%;
       opacity: 0; filter: blur(12px) grayscale(1);
       transform: scale(.94);
       animation: emerge 2.6s cubic-bezier(.2,.7,.2,1) .4s forwards;
     }
     .halo {
-      position: absolute; width: 150px; height: 150px; border-radius: 50%;
-      box-shadow: 0 0 80px 20px rgba(255,255,255,.07);
+      position: absolute; width: min(300px, 70vw); height: min(300px, 70vw); border-radius: 50%;
+      box-shadow: 0 0 140px 30px rgba(255,255,255,.07);
       opacity: 0; animation: breathe 6s ease-in-out 3s infinite;
       pointer-events: none;
     }
@@ -46,13 +46,15 @@
   (() => {
     if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const c = document.getElementById('rain'), x = c.getContext('2d');
-    const R = 75;                       // logo radius in CSS px
+    const logo = document.querySelector('.logo');
+    let R = 150;                        // logo radius in CSS px, measured on resize
     let W, H, dpr, drops = [], splashes = [], ripples = [];
     const WIND = -0.12;                 // slight slant
 
     function size() {
       dpr = Math.min(devicePixelRatio || 1, 2);
       W = innerWidth; H = innerHeight;
+      R = logo.getBoundingClientRect().width / 2 || R;
       c.width = W * dpr; c.height = H * dpr;
       x.setTransform(dpr, 0, 0, dpr, 0, 0);
       const n = Math.round(W * H / 9000);
