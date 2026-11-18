@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="300" height="300" role="img" aria-label="Petrichor">
+  <title>Petrichor</title>
+  <defs><linearGradient id="steel" gradientUnits="userSpaceOnUse" x1="10" y1="0" x2="95" y2="100">
+      <stop offset="0" stop-color="#5d666f"/><stop offset=".28" stop-color="#e9edf0"/>
+      <stop offset=".5" stop-color="#7c868f"/><stop offset=".72" stop-color="#d3d9de"/>
+      <stop offset="1" stop-color="#4f575f"/></linearGradient></defs>
+  
+  <mask id="mk" maskUnits="userSpaceOnUse" x="0" y="0" width="100" height="100">
+      <rect width="100" height="100" fill="#fff"/><circle cx="77.25" cy="46.80" r="2.1" fill="#000"/><circle cx="64.80" cy="59.25" r="2.1" fill="#000"/><circle cx="47.20" cy="59.25" r="2.1" fill="#000"/><circle cx="34.75" cy="46.80" r="2.1" fill="#000"/><circle cx="34.75" cy="29.20" r="2.1" fill="#000"/><circle cx="47.20" cy="16.75" r="2.1" fill="#000"/><circle cx="64.80" cy="16.75" r="2.1" fill="#000"/><circle cx="77.25" cy="29.20" r="2.1" fill="#000"/>
+      <rect x="0" y="72" width="100" height="3" fill="#000"/>
+    </mask>
+    <g mask="url(#mk)" fill="url(#steel)">
+      <path fill-rule="evenodd" d="M26,38 a30,30 0 1 0 60,0 a30,30 0 1 0 -60,0 Z M40,38 a16,16 0 1 1 32,0 a16,16 0 1 1 -32,0 Z"/>
+      <polygon points="18,8 34,8 34,80 18,94"/>
+    </g>
+    <circle cx="56" cy="38" r="11" fill="none" stroke="url(#steel)" stroke-width="1.6"/>
+</svg>

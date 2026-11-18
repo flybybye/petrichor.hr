@@ -3,506 +3,136 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Petrichor Distillery</title>
-  <meta name="description" content="Petrichor Distillery — Strong spirits, crafted in Croatia. Est. 2020.">
-  <meta property="og:title" content="Petrichor Distillery">
-  <meta property="og:description" content="Strong spirits, crafted in Croatia. Est. 2020.">
-  <meta property="og:image" content="https://petrichor.hr/logo.png">
+  <title>Petrichor — Marine Stainless · Croatia</title>
+  <meta name="description" content="Petrichor — stainless steel fabrication for the marine industry, Croatia.">
+  <meta property="og:title" content="Petrichor — Marine Stainless · Croatia">
+  <meta property="og:description" content="Stainless steel fabrication for the marine industry.">
+  <meta property="og:image" content="https://petrichor.hr/og.png">
   <meta property="og:url" content="https://petrichor.hr">
-  <meta name="theme-color" content="#000000">
-  <link rel="icon" type="image/png" href="/logo.png">
-  <link rel="apple-touch-icon" href="/logo.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#0d1114">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;1,400&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    html, body { height: 100%; overflow: hidden; background: #000; color: #e9e7e2; }
-    body { font-family: Inter, ui-sans-serif, -apple-system, "Helvetica Neue", Arial, sans-serif; -webkit-font-smoothing: antialiased; }
-    #stage, #stage canvas { position: fixed; inset: 0; width: 100%; height: 100%; display: block; cursor: crosshair; }
-
-    /* film layers */
-    .vignette { position: fixed; inset: 0; pointer-events: none;
-      background:
-        linear-gradient(to bottom, rgba(0,0,0,.55), transparent 22%, transparent 78%, rgba(0,0,0,.65)),
-        radial-gradient(ellipse 85% 75% at 50% 45%, transparent 55%, rgba(0,0,0,.7) 100%); }
-    .grain { position: fixed; inset: -50%; pointer-events: none; opacity: .06; animation: grain .9s steps(6) infinite; }
-    @keyframes grain { 0%{transform:translate(0,0)} 20%{transform:translate(-4%,3%)} 40%{transform:translate(3%,-5%)} 60%{transform:translate(-6%,-2%)} 80%{transform:translate(5%,4%)} 100%{transform:translate(0,0)} }
-    #veil { position: fixed; inset: 0; background: #000; pointer-events: none; transition: opacity 3.2s ease; }
-    #veil.off { opacity: 0; }
-
-    /* copy */
-    .ui { position: fixed; inset: 0; pointer-events: none; padding: max(24px, env(safe-area-inset-top)) max(28px, env(safe-area-inset-right)) max(24px, env(safe-area-inset-bottom)) max(28px, env(safe-area-inset-left));
-      display: grid; grid-template-rows: auto 1fr auto; opacity: 0; transition: opacity 2.5s ease 3.2s; }
-    .ready .ui { opacity: 1; }
-    .top { display: flex; justify-content: space-between; align-items: center; }
-    .mark { font-size: 11px; letter-spacing: .32em; text-transform: uppercase; color: rgba(233,231,226,.55); }
-    .bottom { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; }
-    .def { max-width: 380px; }
-    .def .word { font-family: "Cormorant Garamond", Georgia, serif; font-size: clamp(30px, 4vw, 44px); line-height: 1; letter-spacing: .01em; }
-    .def .ipa { font-family: "Cormorant Garamond", Georgia, serif; font-size: 18px; color: rgba(233,231,226,.5); margin-left: 6px; }
-    .def p { font-family: "Cormorant Garamond", Georgia, serif; font-size: 19px; line-height: 1.35; color: rgba(233,231,226,.72); margin-top: 8px; }
-    .def p em { color: rgba(233,231,226,.45); margin-right: 4px; }
-    .tag { text-align: right; font-size: 11px; line-height: 2; letter-spacing: .28em; text-transform: uppercase; color: rgba(233,231,226,.55); white-space: nowrap; }
-    .tag b { font-weight: 500; color: #e9e7e2; }
-
-    .sound { pointer-events: auto; display: flex; align-items: center; gap: 10px; background: none; border: 1px solid rgba(233,231,226,.22);
-      color: rgba(233,231,226,.8); font: 500 10px/1 Inter, sans-serif; letter-spacing: .28em; text-transform: uppercase;
-      padding: 10px 14px; border-radius: 999px; cursor: pointer; transition: border-color .3s, color .3s, background .3s; }
-    .sound:hover { border-color: rgba(233,231,226,.6); color: #fff; background: rgba(255,255,255,.04); }
-    .sound:focus-visible { outline: 1px solid #fff; outline-offset: 3px; }
-    .bars { display: flex; gap: 2px; align-items: flex-end; height: 10px; }
-    .bars i { width: 2px; height: 3px; background: currentColor; transition: height .3s; }
-    .on .bars i { animation: eq 1s ease-in-out infinite; }
-    .on .bars i:nth-child(2) { animation-delay: -.3s; } .on .bars i:nth-child(3) { animation-delay: -.6s; } .on .bars i:nth-child(4) { animation-delay: -.15s; }
-    @keyframes eq { 0%,100% { height: 3px; } 50% { height: 10px; } }
-
-    .hint { position: fixed; left: 50%; bottom: max(28px, env(safe-area-inset-bottom)); transform: translateX(-50%);
-      font-size: 10px; letter-spacing: .32em; text-transform: uppercase; color: rgba(233,231,226,.4); pointer-events: none;
-      opacity: 0; transition: opacity 1.2s ease; white-space: nowrap; }
-    .ready .hint { opacity: 1; transition-delay: 6s; }
-    .hint.gone { opacity: 0 !important; transition-delay: 0s !important; }
-
-    .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
-
-    /* fallback (no WebGL) */
-    .fallback { position: fixed; inset: 0; display: none; place-items: center; }
-    .fallback img { width: min(300px, 70vw); border-radius: 50%; }
-    .nogl .fallback { display: grid; }
-    .nogl #veil, .nogl .hint, .nogl .sound { display: none; }
-    .nogl .ui { opacity: 1; transition: none; }
-
-    @media (max-width: 760px) {
-      .bottom { flex-direction: column; align-items: flex-start; gap: 18px; }
-      .tag { text-align: left; font-size: 9.5px; letter-spacing: .24em; }
-      .def p { font-size: 17px; }
-      .hint { bottom: auto; top: max(76px, calc(env(safe-area-inset-top) + 56px)); font-size: 9px; letter-spacing: .26em; }
-      .mark { font-size: 9.5px; letter-spacing: .26em; }
+    :root {
+      --bg: #0d1114; --bg-2: #12171b; --fg: #eef1f3; --muted: #8e979f; --dim: #5d666e;
+      --line: rgba(238,241,243,.1);
+      --steel: linear-gradient(90deg, transparent, #4f575f 15%, #e9edf0 45%, #7c868f 60%, #d3d9de 80%, transparent);
     }
-    @media (prefers-reduced-motion: reduce) { .grain { animation: none; } }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--fg); font: 300 17px/1.6 Inter, ui-sans-serif, -apple-system, "Helvetica Neue", Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+    a { color: inherit; }
+    .wrap { width: min(1120px, 100% - 32px); margin-inline: auto; }
+    .label { font: 700 11px/1 Syncopate, sans-serif; letter-spacing: .32em; text-transform: uppercase; color: var(--muted); }
+
+    /* hero */
+    .hero { min-height: 100svh; display: grid; place-items: center; position: relative; overflow: hidden;
+      background: radial-gradient(ellipse 70% 55% at 50% 50%, #161c21 0%, var(--bg) 70%); }
+    .hero::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: var(--steel); opacity: .5; }
+    .hero img { width: min(620px, 82vw); height: auto; display: block; opacity: 0; transform: translateY(8px); animation: in 1.6s cubic-bezier(.2,.7,.2,1) .2s forwards; }
+    .scroll { position: absolute; bottom: 32px; left: 50%; transform: translateX(-50%); display: grid; justify-items: center;
+      opacity: 0; animation: fade 1.2s ease 1.4s forwards; }
+    .scroll span { width: 1px; height: 44px; background: linear-gradient(var(--muted), transparent); }
+    @keyframes in { to { opacity: 1; transform: none; } }
+    @keyframes fade { to { opacity: 1; } }
+
+    /* sections */
+    section { padding: clamp(80px, 12vw, 140px) 0; border-bottom: 1px solid var(--line); }
+    .intro { display: grid; grid-template-columns: 1fr 2fr; gap: 48px; align-items: start; }
+    .intro p { font-size: clamp(22px, 2.6vw, 32px); line-height: 1.35; font-weight: 300; letter-spacing: -.01em; max-width: 24ch; }
+    .intro p em { font-style: normal; color: var(--muted); }
+
+    .services { margin-top: 0; display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--line); }
+    .svc { padding: 36px 28px 40px 0; border-right: 1px solid var(--line); }
+    .svc + .svc { padding-left: 28px; }
+    .svc:last-child { border-right: 0; }
+    .svc .n { font: 400 11px/1 Syncopate, sans-serif; letter-spacing: .2em; color: var(--dim); }
+    .svc h3 { font: 700 13px/1.4 Syncopate, sans-serif; letter-spacing: .14em; text-transform: uppercase; margin: 28px 0 12px; }
+    .svc p { color: var(--muted); font-size: 15px; line-height: 1.6; }
+    .head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 40px; gap: 24px; }
+
+    .contact { text-align: center; }
+    .contact h2 { font: 700 clamp(22px, 3.4vw, 40px)/1.2 Syncopate, sans-serif; letter-spacing: .12em; text-transform: uppercase; margin: 28px 0 18px; }
+    .contact p { color: var(--muted); }
+
+    footer { padding: 36px 0 calc(36px + env(safe-area-inset-bottom)); }
+    footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; font-size: 13px; color: var(--dim); }
+    footer b { font: 700 11px/1.6 Syncopate, sans-serif; letter-spacing: .3em; color: var(--muted); }
+
+    /* reveal on scroll */
+    .rv { opacity: 0; transform: translateY(16px); transition: opacity 1s ease, transform 1s cubic-bezier(.2,.7,.2,1); }
+    .rv.on { opacity: 1; transform: none; }
+
+    @media (max-width: 900px) {
+      .intro { grid-template-columns: 1fr; gap: 24px; }
+      .services { grid-template-columns: 1fr 1fr; }
+      .svc, .svc + .svc { padding: 32px 20px 36px 0; }
+      .svc:nth-child(2n) { border-right: 0; padding-left: 20px; }
+      .svc:nth-child(n+3) { border-top: 1px solid var(--line); }
+    }
+    @media (max-width: 560px) {
+      .services { grid-template-columns: 1fr; }
+      .svc, .svc + .svc, .svc:nth-child(2n) { border-right: 0; padding: 28px 0 32px; }
+      .svc + .svc { border-top: 1px solid var(--line); }
+      .head { flex-direction: column; gap: 10px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .hero img, .scroll { animation: none; opacity: 1; }
+      .hero img { transform: none; }
+      .rv { opacity: 1; transform: none; transition: none; }
+    }
   </style>
 </head>
 <body>
-  <h1 class="sr">Petrichor Distillery — Strong Spirits, Crafted in Croatia, Est. 2020</h1>
-  <div id="stage" aria-hidden="true"></div>
-  <div class="fallback"><img src="/logo.png" alt="Petrichor Distillery logo"></div>
-  <div class="vignette"></div>
-  <div class="grain" id="grain"></div>
-  <div id="veil"></div>
+  <header class="hero">
+    <h1><img src="/logo.svg" alt="Petrichor — Marine Stainless · Croatia" width="1283" height="255"></h1>
+    <a class="scroll" href="#about" aria-label="Scroll down"><span></span></a>
+  </header>
 
-  <div class="ui">
-    <div class="top">
-      <span class="mark">Petrichor Distillery</span>
-      <button class="sound" id="sound" aria-pressed="false"><span class="bars"><i></i><i></i><i></i><i></i></span><span id="soundLabel">Sound</span></button>
-    </div>
-    <div></div>
-    <div class="bottom">
-      <div class="def">
-        <span class="word">petrichor</span><span class="ipa">/ˈpɛtrɪkɔːr/</span>
-        <p><em>n.</em>the earthy scent that rises when rain falls on dry ground.</p>
+  <main>
+    <section id="about">
+      <div class="wrap intro rv">
+        <div class="label">About</div>
+        <p>Stainless steel fabrication for the marine industry. <em>Made to measure, built for life at sea — in Croatia.</em></p>
       </div>
-      <div class="tag"><b>Strong Spirits</b><br>Crafted in Croatia<br>Est. 2020</div>
-    </div>
-  </div>
-  <div class="hint" id="hint">Click anywhere to call the thunder</div>
+    </section>
+
+    <section id="services">
+      <div class="wrap">
+        <div class="head rv"><div class="label">What we do</div></div>
+        <div class="services">
+          <div class="svc rv"><div class="n">01</div><h3>Fabrication</h3><p>Railings, pulpits, arches and fittings, made to measure.</p></div>
+          <div class="svc rv"><div class="n">02</div><h3>Welding</h3><p>Precise welding of marine-grade stainless steel.</p></div>
+          <div class="svc rv"><div class="n">03</div><h3>Finishing</h3><p>Polishing and surface treatment that stands up to salt and sun.</p></div>
+          <div class="svc rv"><div class="n">04</div><h3>Repair &amp; refit</h3><p>Restoring and upgrading existing stainless work on board.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="contact" id="contact">
+      <div class="wrap rv">
+        <div class="label">Contact</div>
+        <h2>Let's build it</h2>
+        <p>Contact details coming soon.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap"><b>PETRICHOR</b><span>© 2026 Petrichor · Croatia</span></div>
+  </footer>
 
   <script>
-    // film grain texture
-    (() => {
-      const c = document.createElement('canvas'); c.width = c.height = 160;
-      const g = c.getContext('2d'), img = g.createImageData(160, 160);
-      for (let i = 0; i < img.data.length; i += 4) { const v = Math.random() * 255; img.data[i] = img.data[i+1] = img.data[i+2] = v; img.data[i+3] = 255; }
-      g.putImageData(img, 0, 0);
-      document.getElementById('grain').style.backgroundImage = `url(${c.toDataURL()})`;
-    })();
-    // if the 3D scene hasn't started in 6s (no WebGL, CDN blocked), show the plain logo
-    setTimeout(() => { if (!document.body.classList.contains('ready')) document.body.classList.add('nogl'); }, 6000);
-  </script>
-
-  <script type="importmap">
-    { "imports": {
-      "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
-      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
-    } }
-  </script>
-
-  <script type="module">
-  import * as THREE from 'three';
-  import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
-
-  const body = document.body;
-  if (body.classList.contains('nogl')) throw new Error('fallback active');
-  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const mobile = matchMedia('(max-width: 760px), (pointer: coarse)').matches;
-  if (mobile) document.getElementById('hint').textContent = 'Tap anywhere to call the thunder';
-
-  // ---------- renderer / scene ----------
-  let renderer;
-  try {
-    renderer = new THREE.WebGLRenderer({ antialias: !mobile, powerPreference: 'high-performance' });
-  } catch (e) { body.classList.add('nogl'); throw e; }
-  renderer.setPixelRatio(Math.min(devicePixelRatio || 1, mobile ? 1.5 : 1.75));
-  renderer.setSize(innerWidth, innerHeight);
-  document.getElementById('stage').appendChild(renderer.domElement);
-
-  const scene = new THREE.Scene();
-  const FOG = new THREE.Color(0x1c1c1c), FLASH = new THREE.Color(0xa8a8a8);
-  const fogColor = FOG.clone();
-  scene.background = fogColor;
-  scene.fog = new THREE.FogExp2(fogColor, 0.07);
-  const camera = new THREE.PerspectiveCamera(mobile ? 68 : 58, innerWidth / innerHeight, 0.1, 700);
-
-  // seeded random so the forest is the same for everyone
-  let seed = 20200417;
-  const rand = () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
-
-  // ---------- lights ----------
-  const hemi = new THREE.HemisphereLight(0xbfbfbf, 0x000000, 0.5);
-  const moon = new THREE.DirectionalLight(0xffffff, 0.7);
-  const bolt = new THREE.DirectionalLight(0xffffff, 0);
-  scene.add(hemi, moon, moon.target, bolt, bolt.target);
-
-  // ---------- forest (periodic along z so it loops forever) ----------
-  const P = 120, COPIES = 3, PER = mobile ? 170 : 330;
-  const pathX = z => 2.4 * Math.sin(z * 2 * Math.PI / P) + 1.3 * Math.sin(z * 4 * Math.PI / P + 1.3);
-
-  function treeGeometry() {
-    const parts = [];
-    const trunk = new THREE.CylinderGeometry(0.1, 0.2, 2.4, 5); trunk.translate(0, 1.2, 0); parts.push(trunk);
-    const tiers = 5;
-    for (let i = 0; i < tiers; i++) {
-      const r = 2.0 * (1 - i / tiers * 0.78), h = 2.7 * (1 - i / tiers * 0.3);
-      const c = new THREE.ConeGeometry(r, h, 7); c.translate(0, 1.7 + i * 1.4 + h / 2, 0);
-      c.rotateY(i * 0.7);
-      parts.push(c);
-    }
-    return mergeGeometries(parts);
-  }
-  const trees = new THREE.InstancedMesh(
-    treeGeometry(),
-    new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.95, metalness: 0, flatShading: true }),
-    PER * COPIES
-  );
-  {
-    const m = new THREE.Matrix4(), q = new THREE.Quaternion(), e = new THREE.Euler(), s = new THREE.Vector3(), p = new THREE.Vector3(), col = new THREE.Color();
-    const base = [];
-    for (let i = 0; i < PER; i++) {
-      const z = -rand() * P, side = rand() < 0.5 ? -1 : 1;
-      const x = pathX(z) + side * (4.3 + rand() * 1.8 + Math.pow(rand(), 1.5) * 64);
-      base.push({ x, z, k: 0.65 + Math.pow(rand(), 1.3) * 1.25, ry: rand() * 6.28, lx: (rand() - .5) * .07, lz: (rand() - .5) * .07, c: 0.018 + rand() * 0.05 });
-    }
-    let n = 0;
-    for (let k = 0; k < COPIES; k++) for (const b of base) {
-      p.set(b.x, -0.1, b.z - k * P);
-      q.setFromEuler(e.set(b.lx, b.ry, b.lz));
-      s.set(b.k * (0.85 + (b.c * 4)), b.k, b.k * (0.85 + (b.c * 4)));
-      trees.setMatrixAt(n, m.compose(p, q, s));
-      trees.setColorAt(n, col.setScalar(b.c));
-      n++;
-    }
-  }
-  scene.add(trees);
-
-  const ground = new THREE.Mesh(
-    new THREE.PlaneGeometry(500, P * COPIES + 300),
-    new THREE.MeshStandardMaterial({ color: 0x0b0b0b, roughness: 0.55, metalness: 0.15 })
-  );
-  ground.rotation.x = -Math.PI / 2; ground.position.z = -P * COPIES / 2;
-  scene.add(ground);
-
-  // ---------- the logo, hung in the sky like a moon ----------
-  const logoTex = new THREE.TextureLoader().load('/logo.png');
-  logoTex.colorSpace = THREE.NoColorSpace;
-  logoTex.anisotropy = 8;
-  const logoMat = new THREE.ShaderMaterial({
-    uniforms: { map: { value: logoTex }, uOpacity: { value: 0 }, uBright: { value: 1 } },
-    transparent: true, depthWrite: false,
-    vertexShader: `varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.); }`,
-    fragmentShader: `uniform sampler2D map; uniform float uOpacity, uBright; varying vec2 vUv;
-      void main(){ float d = length(vUv - .5); float a = 1. - smoothstep(.482, .5, d);
-        vec3 c = texture2D(map, vUv).rgb; c = vec3(dot(c, vec3(.299,.587,.114))) * uBright;
-        gl_FragColor = vec4(c, a * uOpacity); }`
-  });
-  const logo = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), logoMat);
-  logo.renderOrder = 2;
-
-  const glowTex = (() => {
-    const c = document.createElement('canvas'); c.width = c.height = 256;
-    const g = c.getContext('2d'), r = g.createRadialGradient(128, 128, 0, 128, 128, 128);
-    r.addColorStop(0, 'rgba(255,255,255,1)'); r.addColorStop(.22, 'rgba(255,255,255,.5)');
-    r.addColorStop(.5, 'rgba(255,255,255,.1)'); r.addColorStop(1, 'rgba(255,255,255,0)');
-    g.fillStyle = r; g.fillRect(0, 0, 256, 256);
-    return new THREE.CanvasTexture(c);
-  })();
-  const glow = new THREE.Mesh(new THREE.PlaneGeometry(1, 1),
-    new THREE.MeshBasicMaterial({ map: glowTex, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, fog: false, opacity: 0 }));
-  glow.renderOrder = 1;
-  scene.add(glow, logo);
-
-  // ---------- rain (all motion on the GPU) ----------
-  const shared = { uTime: { value: 0 }, uCam: { value: new THREE.Vector3() }, uFlash: { value: 0 }, uScale: { value: 1 } };
-  const RAIN = mobile ? 5000 : 12000;
-  {
-    const g = new THREE.BufferGeometry();
-    const pos = new Float32Array(RAIN * 6), sd = new Float32Array(RAIN * 6), end = new Float32Array(RAIN * 2), sp = new Float32Array(RAIN * 2);
-    for (let i = 0; i < RAIN; i++) {
-      const a = Math.random(), b = Math.random(), c = Math.random(), v = 20 + Math.random() * 12;
-      for (let j = 0; j < 2; j++) { const o = (i * 2 + j); sd.set([a, b, c], o * 3); end[o] = j; sp[o] = v; }
-    }
-    g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-    g.setAttribute('aSeed', new THREE.BufferAttribute(sd, 3));
-    g.setAttribute('aEnd', new THREE.BufferAttribute(end, 1));
-    g.setAttribute('aSpeed', new THREE.BufferAttribute(sp, 1));
-    const rain = new THREE.LineSegments(g, new THREE.ShaderMaterial({
-      uniforms: { ...shared, uBox: { value: new THREE.Vector3(50, 26, 50) } },
-      transparent: true, depthWrite: false,
-      vertexShader: `uniform float uTime; uniform vec3 uCam, uBox; attribute vec3 aSeed; attribute float aEnd, aSpeed; varying float vA;
-        void main(){
-          vec3 p = aSeed * uBox;
-          p.y = mod(p.y - uTime * aSpeed, uBox.y) - 1.;
-          p.x = mod(p.x + p.y * .18 - uCam.x, uBox.x) - uBox.x * .5 + uCam.x;
-          p.z = mod(p.z - uCam.z, uBox.z) - uBox.z * .5 + uCam.z;
-          p += vec3(.18, 1., 0.) * aEnd * (aSpeed * .035);
-          vec4 mv = viewMatrix * vec4(p, 1.);
-          float d = length(p - uCam);
-          vA = smoothstep(uBox.z * .5, 4., d) * smoothstep(.6, 2.5, d) * step(0., p.y);
-          gl_Position = projectionMatrix * mv; }`,
-      fragmentShader: `uniform float uFlash; varying float vA; void main(){ gl_FragColor = vec4(vec3(.92), vA * (.26 + uFlash * .7)); }`
-    }));
-    rain.frustumCulled = false; rain.renderOrder = 3;
-    scene.add(rain);
-  }
-
-  // ---------- ripples where drops hit the ground ----------
-  const RIP = mobile ? 500 : 1400;
-  {
-    const g = new THREE.BufferGeometry(), sd = new Float32Array(RIP * 3);
-    for (let i = 0; i < sd.length; i++) sd[i] = Math.random();
-    g.setAttribute('position', new THREE.BufferAttribute(new Float32Array(RIP * 3), 3));
-    g.setAttribute('aSeed', new THREE.BufferAttribute(sd, 3));
-    const rip = new THREE.Points(g, new THREE.ShaderMaterial({
-      uniforms: shared, transparent: true, depthWrite: false,
-      vertexShader: `uniform float uTime, uScale; uniform vec3 uCam; attribute vec3 aSeed; varying float vT, vD;
-        float h(float n){ return fract(sin(n) * 43758.5453); }
-        void main(){
-          float t = uTime * 1.4 + aSeed.z * 10.; float cyc = floor(t); vT = fract(t);
-          vec2 r = vec2(h(cyc * 12.9898 + aSeed.x * 78.233), h(cyc * 39.346 + aSeed.y * 11.135));
-          vec3 p = vec3((r.x - .5) * 34. + uCam.x, .04, (r.y - .5) * 34. + uCam.z - 12.);
-          vec4 mv = viewMatrix * vec4(p, 1.); vD = -mv.z;
-          gl_PointSize = 1.1 * uScale / max(vD, .5);
-          gl_Position = projectionMatrix * mv; }`,
-      fragmentShader: `uniform float uFlash; varying float vT, vD;
-        void main(){ vec2 q = gl_PointCoord - .5; q.y *= 3.4; float r = length(q); float rad = .06 + vT * .4;
-          float ring = smoothstep(.05, 0., abs(r - rad));
-          gl_FragColor = vec4(vec3(.85), ring * (1. - vT) * (.32 + uFlash * .5) * smoothstep(22., 3., vD)); }`
-    }));
-    rip.frustumCulled = false; rip.renderOrder = 3;
-    scene.add(rip);
-  }
-
-  // ---------- low drifting mist ----------
-  const MIST = mobile ? 110 : 240;
-  const mistMat = new THREE.ShaderMaterial({
-    uniforms: { ...shared, uOpacity: { value: .07 } }, transparent: true, depthWrite: false,
-    vertexShader: `uniform float uTime, uScale; uniform vec3 uCam; attribute vec3 aSeed; varying float vA;
-      void main(){
-        vec3 box = vec3(140., 1., 110.);
-        vec3 p = aSeed * box;
-        p.x += uTime * (.4 + aSeed.y * .8);
-        p.x = mod(p.x - uCam.x, box.x) - box.x * .5 + uCam.x;
-        p.z = mod(p.z - uCam.z, box.z) - box.z * .5 + uCam.z;
-        p.y = .4 + aSeed.y * 5.;
-        vec4 mv = viewMatrix * vec4(p, 1.); float d = -mv.z;
-        gl_PointSize = min((14. + aSeed.z * 16.) * uScale / max(d, 1.), 1400.);
-        vA = smoothstep(3., 14., d) * smoothstep(55., 30., length(p.xz - uCam.xz));
-        gl_Position = projectionMatrix * mv; }`,
-    fragmentShader: `uniform float uOpacity, uFlash; varying float vA;
-      void main(){ float r = length(gl_PointCoord - .5); float a = smoothstep(.5, 0., r); gl_FragColor = vec4(vec3(.6), a * a * vA * (uOpacity + uFlash * .12)); }`
-  });
-  {
-    const g = new THREE.BufferGeometry(), sd = new Float32Array(MIST * 3);
-    for (let i = 0; i < sd.length; i++) sd[i] = Math.random();
-    g.setAttribute('position', new THREE.BufferAttribute(new Float32Array(MIST * 3), 3));
-    g.setAttribute('aSeed', new THREE.BufferAttribute(sd, 3));
-    const mist = new THREE.Points(g, mistMat); mist.frustumCulled = false; mist.renderOrder = 3; scene.add(mist);
-  }
-
-  // ---------- lightning bolts ----------
-  const boltCore = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, fog: false, opacity: 0, side: THREE.DoubleSide });
-  const boltGlow = boltCore.clone();
-  const boltGroup = new THREE.Group(); scene.add(boltGroup);
-  let boltMeshes = [];
-
-  function jag(x0, y0, x1, y1, disp, iters) {
-    let pts = [[x0, y0], [x1, y1]];
-    for (let it = 0; it < iters; it++, disp *= .55) {
-      const nxt = [pts[0]];
-      for (let i = 1; i < pts.length; i++) {
-        const [ax, ay] = pts[i - 1], [bx, by] = pts[i];
-        nxt.push([(ax + bx) / 2 + (Math.random() - .5) * disp, (ay + by) / 2 + (Math.random() - .5) * disp * .3], pts[i]);
-      }
-      pts = nxt;
-    }
-    return pts;
-  }
-  function ribbon(paths, wFn) {
-    const v = [];
-    for (const { pts, w } of paths) for (let i = 1; i < pts.length; i++) {
-      const [ax, ay] = pts[i - 1], [bx, by] = pts[i];
-      const dx = bx - ax, dy = by - ay, L = Math.hypot(dx, dy) || 1, nx = -dy / L * wFn(w) / 2, ny = dx / L * wFn(w) / 2;
-      v.push(ax - nx, ay - ny, 0, ax + nx, ay + ny, 0, bx + nx, by + ny, 0, ax - nx, ay - ny, 0, bx + nx, by + ny, 0, bx - nx, by - ny, 0);
-    }
-    const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(v, 3)); return g;
-  }
-  function makeBolt(near) {
-    boltMeshes.forEach(m => { m.geometry.dispose(); boltGroup.remove(m); });
-    const top = 95, x1 = (Math.random() - .5) * 30;
-    const main = jag(0, top, x1, 0, 34, 8);
-    const paths = [{ pts: main, w: 1 }];
-    const branches = 2 + (Math.random() * 3 | 0);
-    for (let b = 0; b < branches; b++) {
-      const i = 20 + (Math.random() * (main.length * .55) | 0), [sx, sy] = main[i];
-      const len = 12 + Math.random() * 28, dir = Math.random() < .5 ? -1 : 1;
-      paths.push({ pts: jag(sx, sy, sx + dir * len * .8, sy - len, 12, 5), w: .45 });
-    }
-    boltMeshes = [new THREE.Mesh(ribbon(paths, w => w * .55), boltCore), new THREE.Mesh(ribbon(paths, w => w * 5), boltGlow)];
-    boltMeshes.forEach(m => boltGroup.add(m));
-    const d = near ? 110 : 150 + Math.random() * 60;
-    boltGroup.position.set(camera.position.x + (Math.random() - .5) * (near ? 70 : 140), 0, camera.position.z - d);
-    boltGroup.lookAt(camera.position.x, 0, camera.position.z);
-    bolt.position.set(boltGroup.position.x, 80, boltGroup.position.z);
-  }
-
-  // ---------- sound (synthesised, no files) ----------
-  let actx, master, noise, soundOn = false;
-  function ensureAudio() {
-    if (actx) return;
-    actx = new (window.AudioContext || window.webkitAudioContext)();
-    master = actx.createGain(); master.gain.value = 0; master.connect(actx.destination);
-    const len = actx.sampleRate * 3; noise = actx.createBuffer(1, len, actx.sampleRate);
-    const d = noise.getChannelData(0); for (let i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
-    const bed = (hp, lp, gain, rate) => {
-      const s = actx.createBufferSource(); s.buffer = noise; s.loop = true; s.playbackRate.value = rate;
-      const a = actx.createBiquadFilter(); a.type = 'highpass'; a.frequency.value = hp;
-      const b = actx.createBiquadFilter(); b.type = 'lowpass'; b.frequency.value = lp;
-      const g = actx.createGain(); g.gain.value = gain;
-      s.connect(a).connect(b).connect(g).connect(master); s.start();
-    };
-    bed(600, 7000, .2, 1); bed(90, 600, .3, .7); bed(3000, 12000, .04, 1.25);
-  }
-  function thunder(delay, near) {
-    if (!actx || !soundOn) return;
-    const t0 = actx.currentTime + delay, dur = near ? 4.5 : 6.5;
-    const s = actx.createBufferSource(); s.buffer = noise; s.loop = true; s.playbackRate.value = .45;
-    const lp = actx.createBiquadFilter(); lp.type = 'lowpass';
-    lp.frequency.setValueAtTime(near ? 1400 : 450, t0); lp.frequency.exponentialRampToValueAtTime(70, t0 + dur * .7);
-    const g = actx.createGain(); g.gain.setValueAtTime(.0001, t0);
-    g.gain.exponentialRampToValueAtTime(near ? 2 : 1, t0 + (near ? .03 : .4));
-    g.gain.exponentialRampToValueAtTime(.0001, t0 + dur);
-    const rumble = actx.createGain(); rumble.gain.value = 1;
-    const lfo = actx.createOscillator(); lfo.frequency.value = 2 + Math.random() * 5;
-    const depth = actx.createGain(); depth.gain.value = .4; lfo.connect(depth).connect(rumble.gain);
-    s.connect(lp).connect(g).connect(rumble).connect(master);
-    s.start(t0); s.stop(t0 + dur + .2); lfo.start(t0); lfo.stop(t0 + dur + .2);
-  }
-  const soundBtn = document.getElementById('sound');
-  soundBtn.addEventListener('click', e => {
-    e.stopPropagation();
-    ensureAudio(); actx.resume();
-    soundOn = !soundOn;
-    master.gain.setTargetAtTime(soundOn ? .9 : 0, actx.currentTime, .5);
-    soundBtn.classList.toggle('on', soundOn);
-    soundBtn.setAttribute('aria-pressed', soundOn);
-    document.getElementById('soundLabel').textContent = soundOn ? 'Sound on' : 'Sound';
-  });
-  document.addEventListener('visibilitychange', () => { if (actx) document.hidden ? actx.suspend() : soundOn && actx.resume(); });
-
-  // ---------- lightning timing ----------
-  let T = 0, pulses = [], nextStrike = 0.7, flash = 0;
-  function strike(near = false) {
-    makeBolt(near);
-    let s = T; const k = 2 + (Math.random() * 3 | 0);
-    for (let i = 0; i < k; i++) { pulses.push({ s, a: i === 0 ? 1.1 : .35 + Math.random() * .7, d: .05 + Math.random() * .1 }); s += .05 + Math.random() * .2; }
-    thunder(near ? .15 : .8 + Math.random() * 2, near);
-  }
-
-  // ---------- input ----------
-  const mouse = { x: 0, y: 0, sx: 0, sy: 0 };
-  addEventListener('pointermove', e => { mouse.x = e.clientX / innerWidth * 2 - 1; mouse.y = e.clientY / innerHeight * 2 - 1; });
-  renderer.domElement.addEventListener('click', () => {
-    strike(true); nextStrike = T + 6 + Math.random() * 8;
-    document.getElementById('hint').classList.add('gone');
-  });
-
-  // ---------- layout ----------
-  function resize() {
-    camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix();
-    renderer.setSize(innerWidth, innerHeight);
-    shared.uScale.value = innerHeight * renderer.getPixelRatio() / (2 * Math.tan(THREE.MathUtils.degToRad(camera.fov) / 2));
-  }
-  addEventListener('resize', resize); resize();
-
-  // ---------- loop ----------
-  const D = 90, ease = t => 1 - Math.pow(1 - Math.min(Math.max(t, 0), 1), 3);
-  let camZ = -P - 10, last = performance.now();
-  const target = new THREE.Vector3();
-
-  function frame(now) {
-    const dt = Math.min((now - last) / 1000, .05); last = now;
-    T += dt;
-    const motion = reduce ? 0 : 1;
-    shared.uTime.value += dt * motion;
-
-    // lightning
-    if (!reduce && T > nextStrike) { strike(false); nextStrike = T + 7 + Math.random() * 10; }
-    flash = 0;
-    pulses = pulses.filter(p => T - p.s < 2);
-    for (const p of pulses) if (T >= p.s) flash += p.a * Math.exp(-(T - p.s) / p.d);
-    flash = Math.min(flash, 1.2);
-    const f = Math.min(flash, 1);
-    shared.uFlash.value = f;
-    fogColor.copy(FOG).lerp(FLASH, f * .8);
-    const intro = ease(T / 6);
-    scene.fog.density = THREE.MathUtils.lerp(0.075, 0.023, intro) - f * 0.007;
-    hemi.intensity = .5 + f * 2.6;
-    bolt.intensity = f * 3.5; bolt.target.position.copy(camera.position);
-    boltCore.opacity = f; boltGlow.opacity = f * .22;
-
-    // camera glides down the forest path
-    camZ -= dt * 2.3 * motion;
-    if (camZ < -2 * P) camZ += P;
-    const camX = pathX(camZ);
-    const camY = THREE.MathUtils.lerp(.7, 1.75, ease(T / 4.5)) + Math.sin(T * 1.6) * .035 * motion;
-    camera.position.set(camX, camY, camZ);
-    shared.uCam.value.copy(camera.position);
-
-    const visH = 2 * D * Math.tan(THREE.MathUtils.degToRad(camera.fov) / 2), visW = visH * camera.aspect;
-    const size = Math.min(.36 * visH, .62 * visW);
-    const aheadX = pathX(camZ - 25) * .6 + camX * .4;
-    logo.position.set(aheadX, camY + .21 * visH + Math.sin(T * .5) * .4 * motion, camZ - D);
-    logo.scale.setScalar(size);
-    logo.lookAt(camera.position);
-    glow.position.copy(logo.position).add(new THREE.Vector3(0, 0, -1));
-    glow.scale.setScalar(size * 3.6);
-    glow.lookAt(camera.position);
-    glow.material.opacity = (.16 + Math.sin(T * .8) * .04 + f * .4) * ease((T - .8) / 3);
-    logoMat.uniforms.uOpacity.value = ease((T - 1.2) / 3.5);
-    logoMat.uniforms.uBright.value = 1 + f * .25;
-    moon.position.copy(logo.position); moon.target.position.copy(camera.position);
-
-    mouse.sx += (mouse.x - mouse.sx) * .04; mouse.sy += (mouse.y - mouse.sy) * .04;
-    target.set(aheadX + mouse.sx * visW * .07, camY - mouse.sy * visH * .05, camZ - D);
-    camera.lookAt(target);
-
-    renderer.render(scene, camera);
-    requestAnimationFrame(frame);
-  }
-
-  // first frame, then reveal
-  renderer.render(scene, camera);
-  body.classList.add('ready');
-  setTimeout(() => document.getElementById('veil').classList.add('off'), 500);
-  requestAnimationFrame(t => { last = t; frame(t); });
+    const els = document.querySelectorAll('.rv');
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('on'); io.unobserve(e.target); } }), { threshold: .15 });
+      els.forEach((el, i) => { el.style.transitionDelay = (el.classList.contains('svc') ? [...el.parentNode.children].indexOf(el) * 90 : 0) + 'ms'; io.observe(el); });
+    } else els.forEach(el => el.classList.add('on'));
   </script>
 </body>
 </html>

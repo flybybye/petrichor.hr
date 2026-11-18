@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-4 -4 88 88" width="176" height="176" role="img" aria-label="Petrichor">
+  <title>Petrichor</title>
+  
+  <g stroke="#e9ebed" fill="none" stroke-width="5" stroke-linecap="square" stroke-linejoin="miter">
+    <circle cx="40" cy="40" r="37.5"/>
+    <path d="M30,58 V22 H44 A9,9 0 0 1 44,40 H30"/>
+  </g>
+</svg>
